@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Survey – HealthCode BD</title>
+  <style>
+    :root {
+      --primary-color: #1a73e8;
+      --secondary-color: #4285f4;
+      --accent-color: #0d47a1;
+      --text-color: #202124;
+      --light-text: #5f6368;
+      --border-color: #dadce0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #e8f0fe 0%, #ffffff 100%);
+      min-height: 100vh;
+      padding: 2rem;
+      color: var(--text-color);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2.2rem;
+      font-weight: 600;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .submission-info {
+      background: rgba(26, 115, 232, 0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border: 1px solid var(--primary-color);
+    }
+
+    .submission-info p {
+      margin: 0.5rem 0;
+      color: var(--text-color);
+      font-size: 0.9rem;
+    }
+
+    .logo-text {
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+
+    form {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--text-color);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      color: var(--text-color);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%235f6368' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+
+    button {
+      background: var(--primary-color);
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background: var(--accent-color);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+    }
+
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid var(--border-color);
+      border-top: 5px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-text {
+      margin-top: 1rem;
+      color: var(--primary-color);
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-active {
+      display: flex;
+    }
+
+    form.loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .success-message {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      text-align: center;
+      display: none;
+      animation: slideDown 0.5s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      
+      form {
+        padding: 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .submission-info {
+        font-size: 0.8rem;
+      }
+    }
+        .success-message {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      padding: 2rem;
+      border-radius: 12px;
+      margin-top: 2rem;
+      text-align: center;
+      display: none;
+      animation: slideDown 0.5s ease-out;
+      border: 2px solid #2e7d32;
+      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.1);
+    }
+
+    .success-content {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .success-message h3 {
+      color: #2e7d32;
+      margin-bottom: 0.5rem;
+      font-size: 1.5rem;
+    }
+
+    .success-message p {
+      margin: 0.5rem 0;
+      color: #1b5e20;
+    }
+
+    .submission-time {
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(46, 125, 50, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Submitting your response...</div>
+  </div>
+
+  <div class="container">
+    <h2>স্বাস্থ্য জরিপ – <span class="logo-text">HealthCode Bangladesh</span></h2>
+
+    <div class="submission-info">
+      <p><strong>Submission Time (UTC):</strong> <span id="currentDateTime">2025-08-03 12:16:33</span></p>
+      <p><strong>Developer:</strong> <span id="userLogin">nayonsaha</span></p>
+    </div>
+
+    <form id="surveyForm">
+      <!-- Hidden fields for submission data -->
+      <input type="hidden" name="submissionTime" id="submissionTime" value="2025-08-03 12:16:33">
+      <input type="hidden" name="userLogin" id="userLoginInput" value="nayonsaha">
+
+      <div class="form-group">
+        <label>Age Group:</label>
+        <select name="age" required>
+          <option value="Under 18">Under 18</option>
+          <option value="18-30">18–30</option>
+          <option value="31-50">31–50</option>
+          <option value="Above 50">Above 50</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Location:</label>
+        <select name="location" required>
+          <option value="Urban">Urban</option>
+          <option value="Rural">Rural</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Occupation:</label>
+        <input type="text" name="occupation" required>
+      </div>
+
+      <div class="form-group">
+        <label>Have you ever lost your prescription?</label>
+        <select name="lostPrescription" required>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Do you have access to your previous medical records?</label>
+        <select name="recordAccess" required>
+          <option value="Always">Always</option>
+          <option value="Partially">Partially</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Do doctors often ask for your health history?</label>
+        <select name="doctorAsk" required>
+          <option value="Often">Often</option>
+          <option value="Sometimes">Sometimes</option>
+          <option value="Rarely">Rarely</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Have you ever used wrong medicine due to missing health info?</label>
+        <select name="wrongMedicine" required>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+          <option value="Not Sure">Not Sure</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Do you store your health info digitally?</label>
+        <select name="digitalStorage" required>
+          <option value="Yes">Yes</option>
+          <option value="Partially">Partially</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Do you receive health awareness messages regularly?</label>
+        <select name="awareness" required>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+          <option value="Sometimes">Sometimes</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Would you support a National Health ID system?</label>
+        <select name="healthID" required>
+          <option value="Yes">Yes</option>
+          <option value="Maybe">Maybe</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Suggestion (Optional):</label>
+        <textarea name="suggestion" rows="3"></textarea>
+      </div>
+
+      <button type="submit">Submit Survey</button>
+    </form>
+
+    <div class="success-message" id="successMessage">
+      <div class="success-content">
+        <h3>Survey Submitted Successfully!</h3>
+        <p>Thank you for participating in our health survey.</p>
+        <p class="submission-time">Submission Time (UTC): <span id="submitTime"></span></p>
+      </div>
+    </div>
+  </div>
+    </div>
+  </div>
+
+  <script>
+const scriptURL = 'https://script.google.com/macros/s/AKfycbwmUVyzeQ2njOJ6xR-mXllZRAZ4nLkN-Mf6Bg_LXKfxhLAhWRfV3DxQeWyLV7QGYmRXWQ/exec';
+const form = document.getElementById('surveyForm');
+const successMessage = document.getElementById('successMessage');
+const loadingOverlay = document.getElementById('loadingOverlay');
+const submissionTimeField = document.getElementById('submissionTime');
+const currentDateTimeDisplay = document.getElementById('currentDateTime');
+const userLoginDisplay = document.getElementById('userLogin');
+const userLoginInput = document.getElementById('userLoginInput');
+const submitTimeDisplay = document.getElementById('submitTime');
+
+// Format date to show Bangladesh time (UTC+6)
+function formatDateTime(date) {
+    // Get current date in Bangladesh time (UTC+6)
+    const bdTime = new Date(date.getTime());
+    
+    const year = bdTime.getFullYear();
+    const month = String(bdTime.getMonth() + 1).padStart(2, '0');
+    const day = String(bdTime.getDate()).padStart(2, '0');
+    const hours = String(bdTime.getHours()).padStart(2, '0');
+    const minutes = String(bdTime.getMinutes()).padStart(2, '0');
+    const seconds = String(bdTime.getSeconds()).padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+// Update time display
+function updateTime() {
+    const formattedTime = formatDateTime(new Date());
+    currentDateTimeDisplay.textContent = formattedTime;
+    submissionTimeField.value = formattedTime;
+}
+
+// Initialize and update time
+updateTime();
+setInterval(updateTime, 1000);
+
+// Set user information
+const userLogin = 'nayonsaha';
+userLoginDisplay.textContent = userLogin;
+userLoginInput.value = userLogin;
+
+// Loading handlers
+function showLoading() {
+    loadingOverlay.classList.add('loading-active');
+    form.classList.add('loading');
+}
+
+function hideLoading() {
+    loadingOverlay.classList.remove('loading-active');
+    form.classList.remove('loading');
+}
+
+// Form submission handler
+form.addEventListener('submit', e => {
+    e.preventDefault();
+    showLoading();
+
+    // Update submission time
+    const submissionTime = formatDateTime(new Date());
+    submissionTimeField.value = submissionTime;
+    submitTimeDisplay.textContent = submissionTime;
+
+    fetch(scriptURL, {
+        method: 'POST',
+        body: new FormData(form)
+    })
+    .then(response => {
+        hideLoading();
+        successMessage.style.display = 'block';
+        form.reset();
+        
+        // Reset user login after form reset
+        userLoginInput.value = userLogin;
+
+        // Scroll to success message
+        successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+            successMessage.style.display = 'none';
+        }, 5000);
+    })
+    .catch(error => {
+        hideLoading();
+        alert("Something went wrong! Please try again.");
+    });
+});
+  </script>
+</body>
+</html>
